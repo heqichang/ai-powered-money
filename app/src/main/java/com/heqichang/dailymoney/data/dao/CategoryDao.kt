@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-    @Query("SELECT * FROM categories WHERE is_expense = :isExpense ORDER BY name ASC")
+    @Query("SELECT * FROM categories WHERE isExpense = :isExpense ORDER BY name ASC")
     fun getCategoriesByType(isExpense: Boolean): Flow<List<Category>>
     
-    @Query("SELECT * FROM categories ORDER BY is_expense ASC, name ASC")
+    @Query("SELECT * FROM categories ORDER BY isExpense ASC, name ASC")
     fun getAllCategories(): Flow<List<Category>>
     
     @Query("SELECT * FROM categories WHERE id = :id")
@@ -28,6 +28,6 @@ interface CategoryDao {
     @Delete
     suspend fun deleteCategory(category: Category)
     
-    @Query("SELECT EXISTS(SELECT 1 FROM categories WHERE name = :name AND is_expense = :isExpense)")
+    @Query("SELECT EXISTS(SELECT 1 FROM categories WHERE name = :name AND isExpense = :isExpense)")
     suspend fun categoryExists(name: String, isExpense: Boolean): Boolean
 }

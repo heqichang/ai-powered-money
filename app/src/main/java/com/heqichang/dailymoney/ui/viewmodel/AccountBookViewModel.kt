@@ -8,23 +8,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-class AccountBookViewModel @Inject constructor(
+class AccountBookViewModel(
     private val repository: AccountBookRepository
 ) : ViewModel() {
     
     private val _accountBooks = repository.getAllAccountBooks()
     val accountBooks = _accountBooks
     
-    private val _selectedAccountBook = MutableStateFlow\u003cAccountBook?\u003e(null)
-    val selectedAccountBook: StateFlow\u003cAccountBook?\u003e = _selectedAccountBook.asStateFlow()
+    private val _selectedAccountBook = MutableStateFlow<AccountBook?>(null)
+    val selectedAccountBook: StateFlow<AccountBook?> = _selectedAccountBook.asStateFlow()
     
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow\u003cBoolean\u003e = _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private val _error = MutableStateFlow\u003cString?\u003e(null)
-    val error: StateFlow\u003cString?\u003e = _error.asStateFlow()
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
     
     // 选择账本
     fun selectAccountBook(accountBook: AccountBook) {
@@ -87,13 +85,18 @@ class AccountBookViewModel @Inject constructor(
     // 加载默认账本
     fun loadDefaultAccountBook() {
         viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
             try {
-                val books = _accountBooks.replayCache.firstOrNull() ?: emptyList()
-                if (books.isNotEmpty()) {
-                    _selectedAccountBook.value = books.first()
+                // 从仓库获取第一个账本
+                val firstBook = repository.getFirstAccountBook()
+                if (firstBook != null) {
+                    _selectedAccountBook.value = firstBook
                 }
             } catch (e: Exception) {
                 _error.value = "加载默认账本失败"
+            } finally {
+                _isLoading.value = false
             }
         }
     }

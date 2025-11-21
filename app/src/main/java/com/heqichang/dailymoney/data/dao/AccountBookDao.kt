@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountBookDao {
-    @Query("SELECT * FROM account_books ORDER BY created_at DESC")
+    @Query("SELECT * FROM account_books ORDER BY createdAt DESC")
     fun getAllAccountBooks(): Flow<List<AccountBook>>
     
     @Query("SELECT * FROM account_books WHERE id = :id")
@@ -27,4 +27,7 @@ interface AccountBookDao {
     
     @Query("SELECT COUNT(*) FROM account_books")
     suspend fun getAccountBookCount(): Int
+    
+    @Query("SELECT * FROM account_books ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getFirstAccountBook(): AccountBook?
 }

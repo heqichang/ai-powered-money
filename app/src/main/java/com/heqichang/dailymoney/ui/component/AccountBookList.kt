@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +31,7 @@ import com.heqichang.dailymoney.data.entity.AccountBook
 @Composable
 fun AccountBookList(
     accountBooks: List<AccountBook>,
-    selectedBookId: Long? = null,
+    selectedBookId: Int? = null,
     onSelectBook: (AccountBook) -> Unit,
     onEditBook: (AccountBook) -> Unit,
     onDeleteBook: (AccountBook) -> Unit
@@ -39,7 +41,7 @@ fun AccountBookList(
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = 16.dp
+            contentPadding = PaddingValues(16.dp),
         ) {
             items(accountBooks) {
                 AccountBookItem(
@@ -65,7 +67,6 @@ fun AccountBookItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .margin(bottom = 12.dp)
             .clickable { onSelect(accountBook) },
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -80,13 +81,13 @@ fun AccountBookItem(
                 modifier = Modifier
                     .size(56.dp)
                     .background(
-                        color = Color(accountBook.color ?: 0xFF4CAF50),
+                        color = Color(accountBook.color),
                         shape = RoundedCornerShape(8.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.Book,
+                    painter = painterResource(id = R.drawable.ic_book),
                     contentDescription = accountBook.name,
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
@@ -113,9 +114,9 @@ fun AccountBookItem(
             
             if (isSelected) {
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.CheckCircle,
+                    painter = painterResource(id = R.drawable.ic_check_circle),
                     contentDescription = "已选中",
-                    tint = colorResource(id = R.color.primary)
+                    tint = colorResource(id = R.color.teal_200)
                 )
             }
         }
@@ -132,7 +133,7 @@ fun EmptyState() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = androidx.compose.material.icons.Icons.Default.BookOpen,
+            painter = painterResource(id = R.drawable.ic_book_open),
             contentDescription = "空状态",
             tint = Color.Gray,
             modifier = Modifier.size(64.dp)

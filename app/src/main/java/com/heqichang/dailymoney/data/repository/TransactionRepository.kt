@@ -10,18 +10,16 @@ import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
-import javax.inject.Inject
-
-class TransactionRepository @Inject constructor(
+class TransactionRepository(
     private val transactionDao: TransactionDao,
     private val categoryRepository: CategoryRepository
 ) {
     
-    fun getTransactionsByAccountBook(accountBookId: Int): Flow\u003cList\u003cTransaction\u003e\u003e {
+    fun getTransactionsByAccountBook(accountBookId: Int): Flow<List<Transaction>> {
         return transactionDao.getTransactionsByAccountBook(accountBookId)
     }
     
-    fun getTransactionsByDateRange(accountBookId: Int, startDate: LocalDateTime, endDate: LocalDateTime): Flow\u003cList\u003cTransaction\u003e\u003e {
+    fun getTransactionsByDateRange(accountBookId: Int, startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<Transaction>> {
         return transactionDao.getTransactionsByDateRange(accountBookId, startDate, endDate)
     }
     
@@ -52,8 +50,8 @@ class TransactionRepository @Inject constructor(
         // 获取收入统计
         val incomeStats = getCategoryStatistics(accountBookId, startDate, endDate, false)
         
-        val totalExpense = expenseStats.sumOf {\ it.totalAmount }
-        val totalIncome = incomeStats.sumOf {\ it.totalAmount }
+        val totalExpense = expenseStats.sumOf { it.totalAmount }
+        val totalIncome = incomeStats.sumOf { it.totalAmount }
         
         // 合并统计数据
         val allStats = expenseStats + incomeStats
@@ -77,8 +75,8 @@ class TransactionRepository @Inject constructor(
         // 获取收入统计
         val incomeStats = getCategoryStatistics(accountBookId, startDate, endDate, false)
         
-        val totalExpense = expenseStats.sumOf {\ it.totalAmount }
-        val totalIncome = incomeStats.sumOf {\ it.totalAmount }
+        val totalExpense = expenseStats.sumOf { it.totalAmount }
+        val totalIncome = incomeStats.sumOf { it.totalAmount }
         
         // 合并统计数据
         val allStats = expenseStats + incomeStats
@@ -97,11 +95,11 @@ class TransactionRepository @Inject constructor(
         startDate: LocalDateTime,
         endDate: LocalDateTime,
         isExpense: Boolean
-    ): List\u003cCategoryStatistics\u003e {
+    ): List<CategoryStatistics> {
         val rawStats = transactionDao.getCategoryStatistics(accountBookId, startDate, endDate, isExpense)
-        val totalAmount = rawStats.sumOf {\ it.totalAmount }
+        val totalAmount = rawStats.sumOf { it.totalAmount }
         
-        return rawStats.map {\ stat ->
+        return rawStats.map { stat ->
             val category = Category(
                 id = stat.categoryId,
                 name = stat.categoryName,
@@ -119,9 +117,16 @@ class TransactionRepository @Inject constructor(
     }
     
     // 获取所有有记录的年份
-    fun getAvailableYears(accountBookId: Int): Flow\u003cList\u003cInt\u003e\u003e {
-        return transactionDao.getYearlyStatistics(accountBookId).map {\ stats ->
-            stats.map {\ it.year.toInt() }
+    fun getAvailableYears(accountBookId: Int): Flow<List<Int>> {
+        return transactionDao.getYearlyStatistics(accountBookId).map { stats ->
+            stats.map { it.year.toInt() }
         }
+    }
+    
+    // 根据年份获取交易记录
+    fun getTransactionsByYear(accountBookId: Int, year: Int): Flow<List<Transaction>> {
+        val startDate = LocalDateTime.of(year, 1, 1, 0, 0)
+        val endDate = LocalDateTime.of(year, 12, 31, 23, 59, 59)
+        return transactionDao.getTransactionsByDateRange(accountBookId, startDate, endDate)
     }
 }

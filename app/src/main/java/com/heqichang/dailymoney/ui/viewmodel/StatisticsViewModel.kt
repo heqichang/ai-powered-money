@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.heqichang.dailymoney.data.entity.Category
 import com.heqichang.dailymoney.data.entity.Transaction
-import com.heqichang.dailymoney.data.repository.MockTransactionRepository
 import com.heqichang.dailymoney.data.repository.TransactionRepository
 import com.heqichang.dailymoney.util.DateUtils
 import com.heqichang.dailymoney.util.AmountUtils
@@ -20,39 +19,39 @@ class StatisticsViewModel : ViewModel() {
     
     // 当前选中的年份
     private val _selectedYear = MutableStateFlow(Year.now().value)
-    val selectedYear: StateFlow\u003cInt\u003e = _selectedYear.asStateFlow()
+    val selectedYear: StateFlow<Int> = _selectedYear.asStateFlow()
     
     // 月度支出统计数据
-    private val _monthlyExpenses = MutableStateFlow(\u003cPair\u003cString, Double\u003e\u003eemptyList())
-    val monthlyExpenses: StateFlow\u003cList\u003cPair\u003cString, Double\u003e\u003e = _monthlyExpenses.asStateFlow()
+    private val _monthlyExpenses = MutableStateFlow<List<Pair<String, Double>>>(emptyList())
+    val monthlyExpenses: StateFlow<List<Pair<String, Double>>> = _monthlyExpenses.asStateFlow()
     
     // 月度收入统计数据
-    private val _monthlyIncomes = MutableStateFlow(\u003cPair\u003cString, Double\u003e\u003eemptyList())
-    val monthlyIncomes: StateFlow\u003cList\u003cPair\u003cString, Double\u003e\u003e = _monthlyIncomes.asStateFlow()
+    private val _monthlyIncomes = MutableStateFlow<List<Pair<String, Double>>>(emptyList())
+    val monthlyIncomes: StateFlow<List<Pair<String, Double>>> = _monthlyIncomes.asStateFlow()
     
     // 分类支出统计数据
-    private val _categoryExpenses = MutableStateFlow(\u003cPair\u003cCategory, Double\u003e\u003eemptyList())
-    val categoryExpenses: StateFlow\u003cList\u003cPair\u003cCategory, Double\u003e\u003e = _categoryExpenses.asStateFlow()
+    private val _categoryExpenses = MutableStateFlow<List<Pair<Category, Double>>>(emptyList())
+    val categoryExpenses: StateFlow<List<Pair<Category, Double>>> = _categoryExpenses.asStateFlow()
     
     // 分类收入统计数据
-    private val _categoryIncomes = MutableStateFlow(\u003cPair\u003cCategory, Double\u003e\u003eemptyList())
-    val categoryIncomes: StateFlow\u003cList\u003cPair\u003cCategory, Double\u003e\u003e = _categoryIncomes.asStateFlow()
+    private val _categoryIncomes = MutableStateFlow<List<Pair<Category, Double>>>(emptyList())
+    val categoryIncomes: StateFlow<List<Pair<Category, Double>>> = _categoryIncomes.asStateFlow()
     
     // 总支出
     private val _totalExpense = MutableStateFlow(0.0)
-    val totalExpense: StateFlow\u003cDouble\u003e = _totalExpense.asStateFlow()
+    val totalExpense: StateFlow<Double> = _totalExpense.asStateFlow()
     
     // 总收入
     private val _totalIncome = MutableStateFlow(0.0)
-    val totalIncome: StateFlow\u003cDouble\u003e = _totalIncome.asStateFlow()
+    val totalIncome: StateFlow<Double> = _totalIncome.asStateFlow()
     
     // 加载状态
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow\u003cBoolean\u003e = _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
     // 错误信息
-    private val _error = MutableStateFlow\u003cString?\u003enull
-    val error: StateFlow\u003cString?\u003e = _error.asStateFlow()
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
     
     // 选择年份
     fun selectYear(year: Int) {
@@ -75,8 +74,8 @@ class StatisticsViewModel : ViewModel() {
                     calculateCategoryStatistics(transactions)
                     
                     // 计算总计
-                    _totalExpense.value = transactions.filter { it.amount \u003c 0 }.sumOf { -it.amount }
-                    _totalIncome.value = transactions.filter { it.amount \u003e 0 }.sumOf { it.amount }
+                    _totalExpense.value = transactions.filter { it.amount < 0 }.sumOf { -it.amount }
+                    _totalIncome.value = transactions.filter { it.amount > 0 }.sumOf { it.amount }
                 }
                 
             } catch (e: Exception) {
@@ -90,9 +89,9 @@ class StatisticsViewModel : ViewModel() {
     }
     
     // 计算月度统计
-    private fun calculateMonthlyStatistics(transactions: List\u003cTransaction\u003e) {
-        val monthlyExpensesMap = mutableMapOf\u003cString, Double\u003e()
-        val monthlyIncomesMap = mutableMapOf\u003cString, Double\u003e()
+    private fun calculateMonthlyStatistics(transactions: List<Transaction>) {
+        val monthlyExpensesMap = mutableMapOf<String, Double>()
+        val monthlyIncomesMap = mutableMapOf<String, Double>()
         
         // 初始化12个月的数据
         for (month in 1..12) {
@@ -106,7 +105,7 @@ class StatisticsViewModel : ViewModel() {
             val month = transaction.transactionDate.month.value // 使用transactionDate字段
             val monthKey = DateUtils.getMonthFormat(month)
             
-            if (transaction.amount \u003c 0) {
+            if (transaction.amount < 0) {
                 // 支出
                 monthlyExpensesMap[monthKey] = monthlyExpensesMap[monthKey]!! + (-transaction.amount)
             } else {
@@ -121,14 +120,14 @@ class StatisticsViewModel : ViewModel() {
     }
     
     // 计算分类统计
-    private fun calculateCategoryStatistics(transactions: List\u003cTransaction\u003e) {
-        val categoryExpensesMap = mutableMapOf\u003cCategory, Double\u003e()
-        val categoryIncomesMap = mutableMapOf\u003cCategory, Double\u003e()
+    private fun calculateCategoryStatistics(transactions: List<Transaction>) {
+        val categoryExpensesMap = mutableMapOf<Category, Double>()
+        val categoryIncomesMap = mutableMapOf<Category, Double>()
         
         // 按分类汇总数据
-        transactions.forEach { transaction -\u003e
-            transaction.category?.let {\ category -\u003e
-                if (transaction.amount \u003c 0) {
+        transactions.forEach { transaction ->
+            transaction.category?.let { category ->
+                if (transaction.amount < 0) {
                     // 支出
                     categoryExpensesMap[category] = categoryExpensesMap.getOrDefault(category, 0.0) + (-transaction.amount)
                 } else {

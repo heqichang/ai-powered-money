@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-class CategoryViewModel @Inject constructor(
+class CategoryViewModel(
     private val repository: CategoryRepository
 ) : ViewModel() {
     
@@ -21,13 +19,13 @@ class CategoryViewModel @Inject constructor(
     val incomeCategories = _incomeCategories
     
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow\u003cBoolean\u003e = _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private val _error = MutableStateFlow\u003cString?\u003e(null)
-    val error: StateFlow\u003cString?\u003e = _error.asStateFlow()
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
     
     // 创建新分类
-    fun createCategory(name: String, color: Int, isExpense: Boolean) {
+    fun createCategory(name: String, color: Long, isExpense: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null

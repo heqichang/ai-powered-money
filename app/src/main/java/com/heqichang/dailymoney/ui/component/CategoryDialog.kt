@@ -68,7 +68,6 @@ fun CategoryDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     isError = nameError,
-                    supportingText = if (nameError) { Text("请输入分类名称") } else null
                 )
                 
                 // 分类类型选择
@@ -113,7 +112,7 @@ fun CategoryDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    colorOptions.forEach {\ color ->
+                    colorOptions.forEach { color ->
                         ColorOption(
                             color = color,
                             isSelected = color.value.toLong() == selectedColor,
@@ -153,20 +152,5 @@ fun CategoryDialog(
                 Text(text = "取消")
             }
         }
-    )
-}
-
-@Composable
-fun ColorOption(color: Color, isSelected: Boolean, onClick: () -> Unit) {
-    androidx.compose.foundation.layout.Box(
-        modifier = Modifier
-            .size(40.dp)
-            .background(color = color, shape = RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
-            .border(
-                width = 2.dp,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
-            )
     )
 }

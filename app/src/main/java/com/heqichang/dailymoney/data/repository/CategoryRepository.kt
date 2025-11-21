@@ -3,21 +3,19 @@ package com.heqichang.dailymoney.data.repository
 import com.heqichang.dailymoney.data.dao.CategoryDao
 import com.heqichang.dailymoney.data.entity.Category
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
-
-class CategoryRepository @Inject constructor(
+class CategoryRepository(
     private val categoryDao: CategoryDao
 ) {
     
-    fun getExpenseCategories(): Flow\u003cList\u003cCategory\u003e\u003e {
+    fun getExpenseCategories(): Flow<List<Category>> {
         return categoryDao.getCategoriesByType(isExpense = true)
     }
     
-    fun getIncomeCategories(): Flow\u003cList\u003cCategory\u003e\u003e {
+    fun getIncomeCategories(): Flow<List<Category>> {
         return categoryDao.getCategoriesByType(isExpense = false)
     }
     
-    fun getAllCategories(): Flow\u003cList\u003cCategory\u003e\u003e {
+    fun getAllCategories(): Flow<List<Category>> {
         return categoryDao.getAllCategories()
     }
     
@@ -63,7 +61,7 @@ class CategoryRepository @Inject constructor(
         )
         
         // 插入默认分类
-        (expenseCategories + incomeCategories).forEach {\ category ->
+        (expenseCategories + incomeCategories).forEach { category ->
             if (!categoryExists(category.name, category.isExpense)) {
                 insertCategory(category)
             }

@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -45,7 +46,7 @@ fun BottomNavigationBar(navController: NavController) {
             NavigationBarItem(
                 icon = { 
                     Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.Home, // 临时使用默认图标
+                        painter = painterResource(id = item.icon),
                         contentDescription = item.label
                     ) 
                 },

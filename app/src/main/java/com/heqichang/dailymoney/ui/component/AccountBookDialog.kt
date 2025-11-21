@@ -1,5 +1,8 @@
 package com.heqichang.dailymoney.ui.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -70,7 +73,6 @@ fun AccountBookDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     isError = nameError,
-                    supportingText = if (nameError) { Text("请输入账本名称") } else null
                 )
                 
                 // 账本描述输入

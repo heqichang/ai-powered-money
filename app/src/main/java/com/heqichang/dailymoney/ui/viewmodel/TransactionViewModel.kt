@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.Year
-import javax.inject.Inject
-
-class TransactionViewModel @Inject constructor(
+class TransactionViewModel(
     private val repository: TransactionRepository
 ) : ViewModel() {
     

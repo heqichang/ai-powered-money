@@ -3,9 +3,8 @@ package com.heqichang.dailymoney.data.repository
 import com.heqichang.dailymoney.data.dao.AccountBookDao
 import com.heqichang.dailymoney.data.entity.AccountBook
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class AccountBookRepository @Inject constructor(
+class AccountBookRepository(
     private val accountBookDao: AccountBookDao
 ) {
     
@@ -39,5 +38,9 @@ class AccountBookRepository @Inject constructor(
             description = "系统默认账本"
         )
         return insertAccountBook(defaultBook)
+    }
+    
+    suspend fun getFirstAccountBook(): AccountBook? {
+        return accountBookDao.getFirstAccountBook()
     }
 }

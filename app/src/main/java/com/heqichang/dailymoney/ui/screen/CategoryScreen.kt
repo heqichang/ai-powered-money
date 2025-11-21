@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.heqichang.dailymoney.R
 import com.heqichang.dailymoney.data.entity.Category
 import com.heqichang.dailymoney.ui.component.CategoryDialog
@@ -34,7 +35,7 @@ enum class CategoryType {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen() {
+fun CategoryScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: CategoryViewModel = viewModel()
     var selectedType by remember { mutableStateOf(CategoryType.EXPENSE) }
@@ -85,7 +86,7 @@ fun CategoryScreen() {
             // 添加新分类
             viewModel.createCategory(
                 name = category.name,
-                color = category.color.toInt(),
+                color = category.color,
                 isExpense = selectedType == CategoryType.EXPENSE
             )
         } else {
